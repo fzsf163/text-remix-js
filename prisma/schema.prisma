@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id         String     @id @default(uuid())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  title      String     @db.VarChar(255)
+  subTitle   String     @db.Text
+  readTime   DateTime?  @db.Timestamp()
+  content    Json?      @db.JsonB
+  published  Boolean    @default(false)
+  author     Authors    @relation(fields: [authorId], references: [id])
+  authorId   String
+  viewCount  Int        @default(0)
+  shareCount Int        @default(0)
+  Comments   Comments[]
+}
+
+model User {
+  id       String     @id @default(uuid())
+  email    String     @unique
+  userName String     @unique
+  Comments Comments[]
+}
+
+model Comments {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  comment   String   @db.Text
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+  post      Post?    @relation(fields: [postId], references: [id])
+  postId    String?
+  userId    String
+}
+
+model Authors {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  authorName  String
+  displayName String?
+  role        Roles    @default(Author)
+  post        Post[]
+  postCount   Int?
+  gainedView  Int?
+  profileImg  Bytes    @db.ByteA
+  bio         String   @db.Text
+  joinedAt    DateTime @default(now())
+}
+
+enum Roles {
+  Author
+  Moderator
+  Admin
+  Devs
+}
+
+model Subscriptions {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  subscripedAt DateTime @default(now())
+  SendStatus   Boolean  @default(true)
+}
