@@ -3,10 +3,16 @@ import { Form, redirect, useActionData, useLoaderData } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
 import type { ActionFunctionArgs } from "@remix-run/node";
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { json } from "@remix-run/react";
 import { useToast } from "~/components/ui/use-toast";
-import { Create_User, Find_User } from "~/utilss/prismaFunctions";
+import {
+  Create_User,
+  Find_User,
+  Get_Comment_Count,
+  Get_Users_Count,
+  Post_Comment,
+} from "~/utilss/prismaFunctions";
 
 export const meta: MetaFunction = () => {
   return [
@@ -14,10 +20,11 @@ export const meta: MetaFunction = () => {
     { name: "Blogs of Mind", content: "Welcome to Blogs!" },
   ];
 };
-const prisma = new PrismaClient();
+
 export async function loader({ params }: LoaderFunctionArgs) {
-  const userss = await prisma.user.count();
-  const comments_count = await prisma.comments.count();
+  const userss = await Get_Users_Count();
+  console.log("🚀 ~ loader ~ userss:", userss);
+  const comments_count = await Get_Comment_Count();
   return { userss, comments_count };
 }
 
@@ -40,15 +47,6 @@ export async function action({ request }: ActionFunctionArgs) {
   //   }
   // };
 
-  const Post_Comment = async (user_ID: string) => {
-    return await prisma.comments.create({
-      data: {
-        comment: commentInput,
-        userId: user_ID,
-      },
-    });
-  };
-
   const errors = {} as { emailExists?: string };
 
   if (commentInput !== null && emailInput !== null && userNameInput !== null) {
@@ -58,7 +56,7 @@ export async function action({ request }: ActionFunctionArgs) {
       const { foundUser } = found_User;
       if (foundUser?.id) {
         console.log("🚀 ~ action ~ found_User:", foundUser.id);
-        const add_Comment = await Post_Comment(foundUser.id);
+        const add_Comment = await Post_Comment(foundUser.id, commentInput);
         const comment = add_Comment.comment;
         console.log("🚀 ~ action | 63 | ~ comment:", comment, add_Comment);
       } else {
@@ -68,7 +66,7 @@ export async function action({ request }: ActionFunctionArgs) {
         const created_user_userName = created_user.userName;
 
         if (created_user_id) {
-          const add_Comment = await Post_Comment(created_user_id);
+          const add_Comment = await Post_Comment(created_user_id, commentInput);
           const comment = add_Comment.comment;
           console.log("🚀 ~ action ~ comment:", comment);
         }
@@ -85,8 +83,6 @@ export async function action({ request }: ActionFunctionArgs) {
           errors.emailExists = "Email already exits";
         }
       }
-    } finally {
-      prisma.$disconnect();
     }
   }
 
@@ -98,6 +94,8 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function Index() {
   const { comments_count, userss } = useLoaderData<typeof loader>();
+
+
   const actionData = useActionData<typeof action>();
   const emailExist = actionData?.errors.emailExists;
   const { toast } = useToast();
