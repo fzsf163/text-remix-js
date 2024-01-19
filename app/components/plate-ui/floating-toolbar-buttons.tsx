@@ -1,18 +1,19 @@
-import React from 'react';
 import {
   MARK_BOLD,
   MARK_CODE,
   MARK_ITALIC,
   MARK_STRIKETHROUGH,
   MARK_UNDERLINE,
-} from '@udecode/plate-basic-marks';
-import { useEditorReadOnly } from '@udecode/plate-common';
+} from "@udecode/plate-basic-marks";
+import { useEditorReadOnly } from "@udecode/plate-common";
 
-import { Icons } from 'app/components/icons';
+import { Icons } from "app/components/icons";
 
-import { MarkToolbarButton } from './mark-toolbar-button';
-import { MoreDropdownMenu } from './more-dropdown-menu';
-import { TurnIntoDropdownMenu } from './turn-into-dropdown-menu';
+import { MarkToolbarButton } from "./mark-toolbar-button";
+import { MoreDropdownMenu } from "./more-dropdown-menu";
+import { TurnIntoDropdownMenu } from "./turn-into-dropdown-menu";
+import { LinkToolbarButton } from "./link-toolbar-button";
+import { CommentToolbarButton } from "./comment-toolbar-button";
 
 export function FloatingToolbarButtons() {
   const readOnly = useEditorReadOnly();
@@ -23,10 +24,16 @@ export function FloatingToolbarButtons() {
         <>
           <TurnIntoDropdownMenu />
 
-          <MarkToolbarButton nodeType={MARK_BOLD} tooltip="Bold (⌘+B)">
+          <MarkToolbarButton
+            nodeType={MARK_BOLD}
+            tooltip="Bold (⌘+B)"
+          >
             <Icons.bold />
           </MarkToolbarButton>
-          <MarkToolbarButton nodeType={MARK_ITALIC} tooltip="Italic (⌘+I)">
+          <MarkToolbarButton
+            nodeType={MARK_ITALIC}
+            tooltip="Italic (⌘+I)"
+          >
             <Icons.italic />
           </MarkToolbarButton>
           <MarkToolbarButton
@@ -41,11 +48,18 @@ export function FloatingToolbarButtons() {
           >
             <Icons.strikethrough />
           </MarkToolbarButton>
-          <MarkToolbarButton nodeType={MARK_CODE} tooltip="Code (⌘+E)">
+          <MarkToolbarButton
+            nodeType={MARK_CODE}
+            tooltip="Code (⌘+E)"
+          >
             <Icons.code />
           </MarkToolbarButton>
+
+          <LinkToolbarButton />
         </>
       )}
+
+      <CommentToolbarButton />
 
       <MoreDropdownMenu />
     </>
