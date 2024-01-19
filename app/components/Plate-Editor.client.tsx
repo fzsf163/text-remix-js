@@ -378,7 +378,7 @@ export function PlateEditor() {
             <FixedToolbarButtons />
           </FixedToolbar>
 
-          <Editor />
+          <Editor className="my-6 outline-transparent" />
 
           <FloatingToolbar>
             <FloatingToolbarButtons />

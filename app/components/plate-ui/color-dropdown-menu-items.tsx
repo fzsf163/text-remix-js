@@ -1,15 +1,20 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { DropdownMenuItemProps } from '@radix-ui/react-dropdown-menu';
-import { cn } from '@udecode/cn';
+import React from "react";
+import { DropdownMenuItemProps } from "@radix-ui/react-dropdown-menu";
+import { cn } from "@udecode/cn";
 
-import { Icons } from 'app/components/icons';
+import { Icons } from "app/components/icons";
 
-import { buttonVariants } from './button';
-import { TColor } from './color-dropdown-menu';
-import { DropdownMenuItem } from './dropdown-menu';
-import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
+import { buttonVariants } from "./button";
+import { TColor } from "./color-dropdown-menu";
+import { DropdownMenuItem } from "./dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./tooltip";
 
 type ColorDropdownMenuItemProps = {
   value: string;
@@ -32,15 +37,15 @@ export function ColorDropdownMenuItem({
     <DropdownMenuItem
       className={cn(
         buttonVariants({
-          variant: 'outline',
+          variant: "outline",
           isMenu: true,
         }),
-        'h-6 w-6 border border-solid border-muted p-0',
-        !isBrightColor && 'border-transparent text-white',
+        "h-6 w-6 border border-solid border-muted p-0",
+        !isBrightColor && "border-transparent text-white",
         className
       )}
       style={{ backgroundColor: value }}
-      onSelect={(e) => {
+      onSelect={e => {
         e.preventDefault();
         updateColor(value);
       }}
@@ -51,10 +56,12 @@ export function ColorDropdownMenuItem({
   );
 
   return name ? (
-    <Tooltip>
-      <TooltipTrigger>{content}</TooltipTrigger>
-      <TooltipContent>{name}</TooltipContent>
-    </Tooltip>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger>{content}</TooltipTrigger>
+        <TooltipContent>{name}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   ) : (
     content
   );
@@ -75,7 +82,7 @@ export function ColorDropdownMenuItems({
 }: ColorDropdownMenuItemsProps) {
   return (
     <div
-      className={cn('grid grid-cols-[repeat(10,1fr)] gap-1', className)}
+      className={cn("grid grid-cols-[repeat(10,1fr)] gap-1", className)}
       {...props}
     >
       {colors.map(({ name, value, isBrightColor }) => (

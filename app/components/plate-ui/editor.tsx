@@ -27,7 +27,7 @@ const editorVariants = cva(
         true: 'cursor-not-allowed opacity-50',
       },
       focusRing: {
-        true: 'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        true: 'focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-2',
         false: '',
       },
       size: {

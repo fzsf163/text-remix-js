@@ -41,7 +41,9 @@ export default function Blogs() {
             <div className="text-left">
               {/* <Editor></Editor> */}
               <br />
-              <PlateEditor></PlateEditor>
+              <div className="w-3/5 mx-auto">
+                <PlateEditor></PlateEditor>
+              </div>
             </div>
           )}
         </ClientOnly>
