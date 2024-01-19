@@ -38,11 +38,11 @@ export default function Blogs() {
         {/* only one editor works at a time */}
         <ClientOnly fallback={<p>Loading Editor Please Wait...</p>}>
           {() => (
-            <>
+            <div className="text-left">
               {/* <Editor></Editor> */}
               <br />
               <PlateEditor></PlateEditor>
-            </>
+            </div>
           )}
         </ClientOnly>
       </div>
