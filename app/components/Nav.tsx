@@ -10,7 +10,7 @@ export default function Nav() {
     { label: "Forum", id: "forum", href: "/forum" },
   ];
   return (
-    <nav className="bg-columbiaBlue px-2 py-3 rounded text-2xl flex items-center justify-around">
+    <nav className="bg-neutral-200 px-2 py-3 rounded text-2xl flex items-center justify-around">
       <h1 className="text-3xl font-bold flex items-center">
         Mind-Cavern <Star></Star>
       </h1>
@@ -28,7 +28,7 @@ export default function Nav() {
                     isPending
                       ? "bg-blue-400"
                       : isActive
-                      ? "bg-kepple text-white"
+                      ? "bg-neutral-500 text-white"
                       : "bg-transparent "
                   }
                 >

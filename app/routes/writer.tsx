@@ -1,5 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
 import { Link, Outlet } from "@remix-run/react";
+import { useState } from "react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -9,6 +10,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Author() {
+  const [visible, setVisible] = useState(false);
   return (
     <div className="text-center text-6xl">
       <h1> This is Author page</h1>
@@ -20,6 +22,18 @@ export default function Author() {
           GO TO Writer's BLOG
         </button>
       </Link>
+      <button
+        onClick={() => setVisible(x => !x)}
+        className={` ${
+          visible
+            ? "animate-in fade-in-100 px-4 py-6 m-5 rounded bg-blue-400 text-white text-4xl"
+            : "animate-out fade-out-100 px-4 py-6 m-5 rounded bg-green-400 text-white text-4xl"
+        }`}
+      >
+        GO TO Writer's BLOG
+      </button>
+
+     
       <Outlet></Outlet>
     </div>
   );
