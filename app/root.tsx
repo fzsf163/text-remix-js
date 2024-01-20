@@ -7,13 +7,16 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
 } from "@remix-run/react";
 import Nav from "./components/Nav";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
 ];
+
 export default function App() {
+  const is_admin = useLocation();
   return (
     <html lang="en">
       <head>
@@ -26,7 +29,7 @@ export default function App() {
         <Links />
       </head>
       <body className="bg-[#C5FFF8] text-black">
-        <Nav></Nav>
+        {is_admin.pathname !== "/admin" && <Nav></Nav>}
         <Outlet />
         <ScrollRestoration />
         <Scripts />

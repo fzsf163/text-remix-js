@@ -20,6 +20,7 @@ export default function Nav() {
             <NavLink
               to={nav.href}
               key={nav.id}
+              prefetch="intent"
             >
               {({ isActive, isPending }) => (
                 <Button

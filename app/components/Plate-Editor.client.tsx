@@ -374,13 +374,13 @@ export function PlateEditor() {
           plugins={plugins}
           initialValue={initialValue}
         >
-          <FixedToolbar>
+          <FixedToolbar className="bg-black text-white">
             <FixedToolbarButtons />
           </FixedToolbar>
 
-          <Editor className="my-6 outline-transparent" />
+          <Editor className="bg-black text-white mt-2 outline-transparent focus-visible:ring-0 p-8" />
 
-          <FloatingToolbar>
+          <FloatingToolbar className="z-10 bg-black text-white">
             <FloatingToolbarButtons />
           </FloatingToolbar>
           <MentionCombobox items={[]} />
