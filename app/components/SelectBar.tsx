@@ -22,17 +22,17 @@ export default function Select_Bar({ name, options, dValue }: Options) {
   const handleSelectValue = (v: string) => {
     switch (true) {
       case v === "bangla":
-        setSearchParams({ lang: v, theme: param_theme });
+        setSearchParams({ lang: v, theme: param_theme }, { replace: true });
         break;
       case v === "english":
-        setSearchParams({ lang: v, theme: param_theme });
+        setSearchParams({ lang: v, theme: param_theme }, { replace: true });
         break;
       case v === "leaf":
-        setSearchParams({ lang: param_lang, theme: v });
+        setSearchParams({ lang: param_lang, theme: v }, { replace: true });
       case v === "dark":
-        setSearchParams({ lang: param_lang, theme: v });
+        setSearchParams({ lang: param_lang, theme: v }, { replace: true });
       case v === "rain":
-        setSearchParams({ lang: param_lang, theme: v });
+        setSearchParams({ lang: param_lang, theme: v }, { replace: true });
     }
   };
   return (
