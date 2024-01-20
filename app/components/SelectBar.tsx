@@ -1,3 +1,5 @@
+import { useNavigate, useNavigation, useSearchParams } from "@remix-run/react";
+
 import {
   Select,
   SelectContent,
@@ -27,8 +29,10 @@ type Options = {
   name: string;
   options?: [{ label: string; id: string; short: string }];
 };
-export default function Select_Bar({ name, options }: Options) {
+export default function Select_Bar({ name }: Options) {
   let opts;
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   if (name === "lang.") {
     opts = lang.options;
@@ -37,7 +41,7 @@ export default function Select_Bar({ name, options }: Options) {
   }
   return (
     <div>
-      <Select>
+      <Select onValueChange={v => navigate(`/admin?data=${v}`)}>
         <SelectTrigger className="w-[180px] bg-black border-none font-bold">
           <SelectValue placeholder={name} />
         </SelectTrigger>
