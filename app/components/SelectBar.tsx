@@ -1,4 +1,4 @@
-import { useNavigate, useNavigation, useSearchParams } from "@remix-run/react";
+import { useSearchParams } from "@remix-run/react";
 
 import {
   Select,
@@ -10,38 +10,38 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 
-const lang = {
-  name: "lang.",
-  options: [
-    { label: "bangla", id: "bangla", short: "bang" },
-    { label: "english", id: "english", short: "eng" },
-  ],
-};
-const themes = {
-  name: "themes.",
-  options: [
-    { label: "dark", id: "dark", short: "dark" },
-    { label: "leaf", id: "leaf", short: "leaf" },
-    { label: "rain", id: "rain", short: "rain" },
-  ],
-};
 type Options = {
   name: string;
-  options?: [{ label: string; id: string; short: string }];
+  options?: { label: string; id: string; short: string }[];
+  dValue?: string;
 };
-export default function Select_Bar({ name }: Options) {
-  let opts;
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-
-  if (name === "lang.") {
-    opts = lang.options;
-  } else {
-    opts = themes.options;
-  }
+export default function Select_Bar({ name, options, dValue }: Options) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const param_lang = searchParams.get("lang") || "english";
+  const param_theme = searchParams.get("theme") || "dark";
+  const handleSelectValue = (v: string) => {
+    console.log("🚀 ~ handleSelectValue ~ v:", v);
+    switch (true) {
+      case v === "bangla":
+        setSearchParams({ lang: v, theme: param_theme });
+        break;
+      case v === "english":
+        setSearchParams({ lang: v, theme: param_theme });
+        break;
+      case v === "leaf":
+        setSearchParams({ lang: param_lang, theme: v });
+      case v === "dark":
+        setSearchParams({ lang: param_lang, theme: v });
+      case v === "rain":
+        setSearchParams({ lang: param_lang, theme: v });
+    }
+  };
   return (
     <div>
-      <Select onValueChange={v => navigate(`/admin?data=${v}`)}>
+      <Select
+        onValueChange={v => handleSelectValue(v)}
+        defaultValue={dValue}
+      >
         <SelectTrigger className="w-[180px] bg-black border-none font-bold">
           <SelectValue placeholder={name} />
         </SelectTrigger>
@@ -50,7 +50,8 @@ export default function Select_Bar({ name }: Options) {
             <SelectLabel>
               {name === "lang." ? "Language" : "Themes"}
             </SelectLabel>
-            {opts?.map(l => {
+
+            {options?.map(l => {
               return (
                 <SelectItem
                   key={l.id}
