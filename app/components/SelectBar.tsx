@@ -20,7 +20,6 @@ export default function Select_Bar({ name, options, dValue }: Options) {
   const param_lang = searchParams.get("lang") || "english";
   const param_theme = searchParams.get("theme") || "dark";
   const handleSelectValue = (v: string) => {
-    console.log("🚀 ~ handleSelectValue ~ v:", v);
     switch (true) {
       case v === "bangla":
         setSearchParams({ lang: v, theme: param_theme });
