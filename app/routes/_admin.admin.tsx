@@ -1,6 +1,10 @@
 import {
   Form,
+  Link,
+  Links,
+  Meta,
   MetaFunction,
+  Scripts,
   isRouteErrorResponse,
   useActionData,
   useFetcher,
@@ -24,6 +28,31 @@ export const meta: MetaFunction = () => {
     { name: "Blogs of Mind", content: "Welcome to Blogs Admin Panel!" },
   ];
 };
+export function ErrorBoundary() {
+  const error = useRouteError();
+  console.error(error);
+  if (isRouteErrorResponse(error)) {
+    return (
+      <div className="bg-red-500 text-xl">
+        <h1>
+          {error.status} {error.statusText}
+        </h1>
+        <p>{error.data}</p>
+      </div>
+    );
+  } else if (error instanceof Error) {
+    return (
+      <div className="bg-red-400 text-xl">
+        <h1>Error</h1>
+        <p>{error.message}</p>
+        {/* <p>The stack trace is:</p>
+        <pre>{error.stack}</pre> */}
+      </div>
+    );
+  } else {
+    return <h1>Unknown Error</h1>;
+  }
+}
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   let formData = await unstable_parseMultipartFormData(
@@ -46,7 +75,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           return fname;
         },
         // Limit the max size to 10MB
-        maxPartSize: 10 * 1024 * 1024,
+        maxPartSize: 1_000_000,
       }),
       unstable_createMemoryUploadHandler()
     )
@@ -57,65 +86,23 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     files: files.map(file => ({ name: file.name, url: `/img/${file.name}` })),
   });
 };
-// const file2 = await request.formData();
-// if (!file2) return json({ status: 500 });
-// const f = file2.get("file-box") as File;
-
-// if (f?.size > 5_000_000) {
-//   return json({ error: "TOO BIG" });
-// }
-// const uploadHandler = unstable_composeUploadHandlers(
-//   unstable_createFileUploadHandler({
-//     maxPartSize: 5_000_000,
-//     file: ({ filename }) => {
-//       const fname = filename.split(" ").join("_");
-//       return fname;
-//     },
-//     // directory: `${process.cwd()}/app/img`,
-//     directory: "./public/img",
-//     avoidFileConflicts: false,
-//   }),
-//   // parse everything else into memory
-//   unstable_createMemoryUploadHandler()
-// );
-
-// const formData = await unstable_parseMultipartFormData(
-//   request,
-//   uploadHandler
-// );
-
-// let files = formData.getAll("file") as NodeOnDiskFile[];
-// return json({
-//   files: files.map(file => ({ name: file.name, url: `/img/${file.name}` })),
-// });
-// file is a "NodeOnDiskFile" which implements the "File" API
-
-// const u = new URL(`./public/img/${file.name}`);
-// const u = new URL(`./public/img/${file.name}`);
-
-// if (file.size > 5_000_000) {
-//   return json({ error_msg: "File size is too big" });
-// }
-
-// return json({
-//   url: `../public/img/${file.name}`,
-//   size: file?.size,
-//   name: file?.name,
-// });
 
 function useFileUpload() {
   let { submit, data, state, formData } = useFetcher<typeof action>();
   let isUploading = state !== "idle";
-
   let uploadingFiles = formData
-    ?.getAll("file")
+    ?.getAll("file-box")
     ?.filter((value: unknown): value is File => value instanceof File)
     .map(file => {
       let name = file.name;
+      let size = file.size;
+      // if (size > 1_000_000) {
+      //   throw "Size MA" ;
+      // }
       // This line is important; it will create an Object URL, which is a `blob:` URL string
       // We'll need this to render the image in the browser as it's being uploaded
       let url = URL.createObjectURL(file);
-      return { name, url };
+      return { name, url, size };
     });
 
   let images = (data?.files ?? []).concat(uploadingFiles ?? []);
@@ -136,10 +123,7 @@ export default function Author() {
   const [searchParams] = useSearchParams();
   const theme = searchParams.get("theme");
   const lang = searchParams.get("lang");
-  const action_data = useActionData<typeof action>();
   let { submit, isUploading, images } = useFileUpload();
-  console.log("🚀 ~ Author ~ images:", images)
-  console.log("🚀 ~ Author ~ action_data:", action_data);
 
   return (
     <div className="text-green-400">
@@ -157,24 +141,36 @@ export default function Author() {
         /> */}
         <h1>File Upload </h1>
 
-        {/* {error && <p>Error happened</p>} */}
-
         <label className="bg-black p-7 m-5 rounded cursor-pointer">
           {isUploading ? <p>Uploading image...</p> : <p>Select an image</p>}
           <input
             type="file"
             name="file-box"
             hidden
-            onChange={event => submit(event.currentTarget.files)}
+            onChange={event =>
+              submit ? submit(event.currentTarget.files) : ""
+            }
           />
         </label>
       </div>
-      {images.map(file => {
+      {images?.map(file => {
         return (
-          <img
+          <div
             key={file.name}
-            src={file.url}
-          ></img>
+            className="w-[400px] mx-auto"
+          >
+            <Link
+              to={file.url}
+              target="_blank"
+              className="text-blue-800"
+            >
+              {file.name}
+            </Link>
+            <img
+              key={file.name}
+              src={file.url}
+            ></img>
+          </div>
         );
       })}
     </div>
