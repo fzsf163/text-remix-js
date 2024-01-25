@@ -17,7 +17,7 @@ export const MediaToolbarButton = withRef<
     nodeType?: typeof ELEMENT_IMAGE | typeof ELEMENT_MEDIA_EMBED;
   }
 >(({ nodeType, ...rest }, ref) => {
-  // const { props } = useMediaToolbarButton({ nodeType });
+  const { props } = useMediaToolbarButton({ nodeType });
   const InputRef = useRef<HTMLInputElement>(null);
   const handleFilepicker = () => {
     if (InputRef) {
@@ -31,12 +31,12 @@ export const MediaToolbarButton = withRef<
       onClick={handleFilepicker}
       {...rest}
     >
-      <Icons.image />
       <input
         type="file"
         hidden
         ref={InputRef}
       ></input>
+      <Icons.image />
     </ToolbarButton>
   );
 });

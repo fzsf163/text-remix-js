@@ -6,7 +6,7 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { ClientOnly } from "remix-utils/client-only";
 import { PlateEditor } from "~/components/Plate-Editor.client";
-import { Suspense } from "react";
+import { Suspense, useRef } from "react";
 import Editor from "~/components/EditorJS.client";
 
 export const meta: MetaFunction = () => {
@@ -18,6 +18,7 @@ export const meta: MetaFunction = () => {
 
 export default function Blogs() {
   const navigate = useNavigate();
+  
   return (
     <div className="text-center text-6xl">
       <h1> This is Blogs page || write a blog</h1>

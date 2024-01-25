@@ -4,6 +4,7 @@ import {
   Plate,
   RenderAfterEditable,
   PlateLeaf,
+  createPluginFactory,
 } from "@udecode/plate-common";
 import {
   createParagraphPlugin,
@@ -147,10 +148,22 @@ import { FloatingToolbarButtons } from "app/components/plate-ui/floating-toolbar
 import { withPlaceholders } from "app/components/plate-ui/placeholder";
 import { withDraggables } from "app/components/plate-ui/with-draggables";
 import { EmojiCombobox } from "app/components/plate-ui/emoji-combobox";
-import { ClientOnly } from "remix-utils/client-only";
-
+const KEY_MINE = "mine";
+const createMyPlugin = createPluginFactory({
+  key: KEY_MINE,
+  handlers: {
+    onKeyDown: editor => event => {
+      // Do something with editor
+    },
+    onChange: editor => value => {
+      // Do something with editor
+      console.log(editor.children);
+    },
+  },
+});
 const plugins = createPlugins(
   [
+    createMyPlugin(),
     createParagraphPlugin(),
     createHeadingPlugin(),
     createBlockquotePlugin(),
