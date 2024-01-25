@@ -112,7 +112,7 @@ export function FixedToolbarButtons() {
             <ToolbarGroup>
               <LinkToolbarButton />
 
-              <MediaToolbarButton nodeType={ELEMENT_IMAGE} />
+              <MediaToolbarButton  nodeType={ELEMENT_IMAGE} />
 
               <TableDropdownMenu />
 

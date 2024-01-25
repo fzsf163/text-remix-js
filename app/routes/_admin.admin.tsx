@@ -1,12 +1,7 @@
 import {
-  Form,
   Link,
-  Links,
-  Meta,
   MetaFunction,
-  Scripts,
   isRouteErrorResponse,
-  useActionData,
   useFetcher,
   useRouteError,
 } from "@remix-run/react";
@@ -21,6 +16,8 @@ import {
   unstable_parseMultipartFormData,
 } from "@remix-run/node";
 import { NodeOnDiskFile } from "@remix-run/node";
+import { Button } from "~/components/ui/button";
+import { useState } from "react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -42,9 +39,13 @@ export function ErrorBoundary() {
     );
   } else if (error instanceof Error) {
     return (
-      <div className="bg-red-400 text-xl">
+      <div className="bg-red-600 text-xl w-fit mx-auto flex flex-col items-center gap-6 m-5 p-5">
         <h1>Error</h1>
-        <p>{error.message}</p>
+        {/* <p>{error.message}</p> */}
+        <p>File &gt; MAX SIZE [5 MB]</p>
+        <Link to={"/admin"}>
+          <Button variant={"secondary"}> Return To Last Page</Button>
+        </Link>
         {/* <p>The stack trace is:</p>
         <pre>{error.stack}</pre> */}
       </div>
@@ -75,7 +76,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           return fname;
         },
         // Limit the max size to 10MB
-        maxPartSize: 1_000_000,
+        maxPartSize: 10_000_000,
       }),
       unstable_createMemoryUploadHandler()
     )
@@ -96,15 +97,20 @@ function useFileUpload() {
     .map(file => {
       let name = file.name;
       let size = file.size;
-      // if (size > 1_000_000) {
-      //   throw "Size MA" ;
-      // }
       // This line is important; it will create an Object URL, which is a `blob:` URL string
       // We'll need this to render the image in the browser as it's being uploaded
       let url = URL.createObjectURL(file);
       return { name, url, size };
     });
 
+  // if (uploadingFiles && uploadingFiles.length > 0) {
+  //   uploadingFiles.map(f => {
+  //     if (f.size > 1_000_000) {
+  //       console.log(f.name, f.size);
+  //       throw new Error("Size too big");
+  //     }
+  //   });
+  // }
   let images = (data?.files ?? []).concat(uploadingFiles ?? []);
 
   return {
@@ -124,7 +130,24 @@ export default function Author() {
   const theme = searchParams.get("theme");
   const lang = searchParams.get("lang");
   let { submit, isUploading, images } = useFileUpload();
+  const [er, set_er] = useState<boolean>(false);
 
+  const handle_file = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.currentTarget.files;
+    if (files) {
+      Array.from(files).forEach(file => {
+        if (file.size > 5_000_000) {
+          set_er(true);
+          console.log(file.size);
+          return;
+        } else {
+          console.log(file);
+          set_er(false);
+          submit(files);
+        }
+      });
+    }
+  };
   return (
     <div className="text-green-400">
       <AdminTopNav></AdminTopNav>
@@ -146,12 +169,14 @@ export default function Author() {
           <input
             type="file"
             name="file-box"
+            multiple
+            accept=".png,.jpeg,.jpg,.webp,.gif,.svg"
+            size={1_000_000}
             hidden
-            onChange={event =>
-              submit ? submit(event.currentTarget.files) : ""
-            }
+            onChange={event => handle_file(event)}
           />
         </label>
+        {er === true && <h1>Max Size Img &gt; 1 mb</h1>}
       </div>
       {images?.map(file => {
         return (
